@@ -5,17 +5,33 @@ import werkzeug
 mysql = MySQL()
 app = Flask(__name__)
 
+# Here we need to replace these config settings
+# With ones retrieved from a file
 # MySQL configurations
-app.config['MYSQL_DATABASE_USER'] = 'jay'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'jay'
-app.config['MYSQL_DATABASE_DB'] = 'BucketList'
-app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+
+'localhost'
 mysql.init_app(app)
+
+
+def read_config():
+    try:
+        with open("config.json") as json_file:
+            data = json.load(json_file)
+            app.config['MYSQL_DATABASE_HOST'] = data['db_host']
+            app.config['MYSQL_DATABASE_DB'] = data['db_name']
+            app.config['MYSQL_DATABASE_USER'] = data['db_user']
+            app.config['MYSQL_DATABASE_PASSWORD'] = data['db_pass']
+            print("DB Data loaded from config.json: ", data)
+    except IOError as err:
+        print("IO Error: ", err)
+    except:
+        print("General Error")
 
 
 @app.route('/')
 def main():
     return render_template('index.html')
+
 
 @app.route('/showSignUp')
 def showSignUp():
@@ -40,7 +56,7 @@ def signUp():
             cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
             data = cursor.fetchall()
 
-            if len(data) is 0:
+            if len(data) == 0:
                 conn.commit()
                 return json.dumps({'message':'User created successfully !'})
             else:
@@ -54,5 +70,8 @@ def signUp():
         cursor.close() 
         conn.close()
 
+
 if __name__ == "__main__":
+    read_config()
     app.run(port=3001)
+
