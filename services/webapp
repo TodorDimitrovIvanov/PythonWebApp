@@ -1,0 +1,9 @@
+[Unit]
+Description=A service for running the Python Web App
+[Service]
+WorkingDirectory=/home/todor/web
+User=todor
+ExecStart=/usr/bin/python3 app.py
+Restart=always
+[Install]
+WantedBy=multi-user.target
