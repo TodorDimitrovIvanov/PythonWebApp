@@ -4,6 +4,6 @@ Description=A service for running the Python Web App
 WorkingDirectory=/home/todor/web
 User=todor
 ExecStart=/usr/bin/python3 app.py
-Restart=always
+Restart=on-failure
 [Install]
 WantedBy=multi-user.target
