@@ -1,16 +1,10 @@
+# Source Repo: https://code.tutsplus.com/tutorials/creating-a-web-app-from-scratch-using-python-flask-and-mysql--cms-22972
+
 from flask import Flask, render_template, json, request
 from flaskext.mysql import MySQL
-import werkzeug
 
 mysql = MySQL()
 app = Flask(__name__)
-
-# Here we need to replace these config settings
-# With ones retrieved from a file
-# MySQL configurations
-
-'localhost'
-mysql.init_app(app)
 
 
 def read_config():
@@ -19,8 +13,11 @@ def read_config():
             data = json.load(json_file)
             app.config['MYSQL_DATABASE_HOST'] = data['db_host']
             app.config['MYSQL_DATABASE_DB'] = data['db_name']
-            app.config['MYSQL_DATABASE_USER'] = data['db_user']
+            temp = data['db_user'] + "@" + data['db_host']
+            print("Temp: ", temp)
+            app.config['MYSQL_DATABASE_USER'] = temp
             app.config['MYSQL_DATABASE_PASSWORD'] = data['db_pass']
+            mysql.init_app(app)
             print("DB Data loaded from config.json: ", data)
     except IOError as err:
         print("IO Error: ", err)
@@ -38,7 +35,7 @@ def showSignUp():
     return render_template('signup.html')
 
 
-@app.route('/signUp',methods=['POST','GET'])
+@app.route('/signUp', methods=['POST','GET'])
 def signUp():
     try:
         _name = request.form['inputName']
@@ -52,23 +49,23 @@ def signUp():
             
             conn = mysql.connect()
             cursor = conn.cursor()
-            _hashed_password = werkzeug.generate_password_hash(_password)
-            cursor.callproc('sp_createUser',(_name,_email,_hashed_password))
-            data = cursor.fetchall()
+            _hashed_password = _password
+            cursor.execute("INSERT INTO tbl_user (user_name, user_username, user_password) VALUES (%s, %s, %s)", (_name, _email, _password))
+            conn.commit()
+            result_data = cursor.fetchall()
+            print("Result:", result_data)
 
-            if len(data) == 0:
+            if len(result_data) == 0:
                 conn.commit()
                 return json.dumps({'message':'User created successfully !'})
             else:
-                return json.dumps({'error':str(data[0])})
+                return json.dumps({'error': str(result_data[0])})
+            cursor.close()
+            conn.close()
         else:
             return json.dumps({'html':'<span>Enter the required fields</span>'})
-
     except Exception as e:
-        return json.dumps({'error':str(e)})
-    finally:
-        cursor.close() 
-        conn.close()
+        return json.dumps({'error': str(e)})
 
 
 if __name__ == "__main__":
