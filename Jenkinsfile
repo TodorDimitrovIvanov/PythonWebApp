@@ -3,6 +3,8 @@
 // This is a global variable that we define and we link it to a custom Groovy function that should check for code changes
 // CODE_CHANGES = getGitChanges()
 
+def groovyScript
+
 // Here we declare that we're developing a pipeline for Jenkins 
 pipeline{ 
 
@@ -31,12 +33,22 @@ pipeline{
 
     // Here we define the different cycles of pipeline, depending on their purpose 
     stages{
-        stage("build"){
 
+        stage("init"){
             steps{
-                echo "Building the application..."
-                // IMPORTANT: Similarly to Bash, in order to expand a string we must use double quotes
-                echo "Building version ${NEW_VERSION}"
+                script{
+                    groovyScript = load "script.groovy"
+                }
+            }
+        }
+
+
+        stage("build"){
+            steps{
+                // Here we import the 'buildApp()' function from the script.groovy file and then run it 
+                script{
+                    groovyScript.buildApp()
+                }
             }
         }
 
@@ -51,7 +63,9 @@ pipeline{
                 }
             }
             steps{
-                echo "Testing the application..."
+                script{
+                    groovyScript.testApp()
+                }
             }
         }
         
@@ -66,7 +80,10 @@ pipeline{
                 ]){
                     sh "Deploying the app with credentials stored within Jenkins" 
                 }
-                echo "Deploying version ${params.VERSION}"
+                // IMPORTANT: Similarly to Bash, in order to expand a string we must use double quotes
+                script{
+                    groovyScript.deployApp()
+                }
             }
         }
     }
