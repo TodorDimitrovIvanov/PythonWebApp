@@ -78,7 +78,7 @@ pipeline{
                 withCredentials([
                     sshUserPrivateKey(credentialsId: 'PyWebApp-Credentials', keyFileVariable: '/tmp/key-deleteme')
                 ]){
-                    sh "Deploying the app with credentials stored within Jenkins" 
+                    sh "echo 'Deploying the app with credentials stored within Jenkins'" 
                 }
                 // IMPORTANT: Similarly to Bash, in order to expand a string we must use double quotes
                 script{
