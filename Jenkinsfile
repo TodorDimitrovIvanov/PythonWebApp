@@ -64,8 +64,7 @@ pipeline{
                 withCredentials([
                     sshUserPrivateKey(credentialsId: 'PyWebApp-Credentials', usernameVariable: USER, keyFileVariable: '/tmp/key-deleteme')
                 ]){
-                    sh "Deploying the app with username ${USER}" 
-
+                    sh "Deploying the app with username ${env.USER}" 
                 }
                 echo "Deploying version ${params.VERSION}"
             }
@@ -84,3 +83,4 @@ pipeline{
 
     }
 }
+
