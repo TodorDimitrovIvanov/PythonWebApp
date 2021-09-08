@@ -68,6 +68,7 @@ pipeline{
                 }
             }
         }
+    }
     // All code within this section will be executed once all stages have been executed
     post{
         // This section will be executed always - no matter whether the build failed or succeeded 
@@ -81,4 +82,3 @@ pipeline{
 
     }
 }
-
