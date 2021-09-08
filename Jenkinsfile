@@ -13,7 +13,7 @@ pipeline{
     // For example, some external configuration for the version of the App that is to be deployed 
     parameters{
         choice(name: 'VERSION', choices: ['1.0', '1.1', '1.2'], description: "Description not available yet")
-        booleanParam(name: 'EXECUTETESTS', defaultValue: true, description: "Description not available yet")
+        booleanParam(name: 'executeTests', defaultValue: true, description: "Description not available yet")
     }
 
     // Here we define which tools can be used in the project. They are limited to Maven, Gradle and JDK 
@@ -47,7 +47,7 @@ pipeline{
                 expression {
                     // This is an environment variable that Jenkins automatically provides 
                     // All available environmental variables are here listed within Jenkins, here: http://139.162.146.107:8080/env-vars.html/
-                    env.BRANCH_NAME == "dev-v1*" || env.BRANCH_NAME == "dev-v2*"
+                    env.BRANCH_NAME == "dev-v1*" && params.executeTests == true
                 }
             }
             steps{
@@ -61,11 +61,13 @@ pipeline{
                 // Here we use a plugin to bind the credentials stored within Jenkins to local variables 
                 // Source: https://www.jenkins.io/doc/pipeline/steps/credentials-binding/
                 // Copies the SSH key file given in the credentials to a temporary location, then sets a variable to that location - the file is deleted when the build completes.
-                withCredentials([
+                /* withCredentials([
                     sshUserPrivateKey(credentialsId: 'PyWebApp-Server-Credentials', usernameVariable: USER, keyFileVariable: '/tmp/key-deleteme')
                 ]){
                     sh "Deploying the app with username ${USER}" 
-                }
+
+                }*/
+                echo "Deploying version ${params.VERSION}"
             }
         }
     }
@@ -82,3 +84,4 @@ pipeline{
 
     }
 }
+
