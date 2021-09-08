@@ -26,7 +26,7 @@ pipeline{
         NEW_VERSION = '1.3.0'
         // This variable is provided a Jenkins plugin named 'Credentials Binding'
         // It takes the ID of the credentials as a parameter
-        SERVER_CREDENTIALS = credentials('PyWebApp-Server-Credentials')
+        SERVER_CREDENTIALS = credentials('PyWebApp-Credentials')
     }
 
     // Here we define the different cycles of pipeline, depending on their purpose 
@@ -62,7 +62,7 @@ pipeline{
                 // Source: https://www.jenkins.io/doc/pipeline/steps/credentials-binding/
                 // Copies the SSH key file given in the credentials to a temporary location, then sets a variable to that location - the file is deleted when the build completes.
                 withCredentials([
-                    sshUserPrivateKey(credentialsId: 'PyWebApp-Server-Credentials', usernameVariable: USER, keyFileVariable: '/tmp/key-deleteme')
+                    sshUserPrivateKey(credentialsId: 'PyWebApp-Credentials', usernameVariable: USER, keyFileVariable: '/tmp/key-deleteme')
                 ]){
                     sh "Deploying the app with username ${USER}" 
 
