@@ -1,7 +1,7 @@
 // Source: https://www.youtube.com/watch?v=7KCS70sCoK0
 
 // This is a global variable that we define and we link it to a custom Groovy function that should check for code changes
-CODE_CHANGES = getGitChanges()
+// CODE_CHANGES = getGitChanges()
 
 // Here we declare that we're developing a pipeline for Jenkins 
 pipeline{ 
