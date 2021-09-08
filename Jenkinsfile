@@ -17,9 +17,9 @@ pipeline{
     }
 
     // Here we define which tools can be used in the project. They are limited to Maven, Gradle and JDK 
-    tools{
+    /*tools{
         maven Maven
-    }
+    }*/
 
     environment{
         // This is an environmental variable that we define 
