@@ -63,8 +63,9 @@ pipeline{
                 // Copies the SSH key file given in the credentials to a temporary location, then sets a variable to that location - the file is deleted when the build completes.
                 withCredentials([
                     sshUserPrivateKey(credentialsId: 'PyWebApp-Server-Credentials', usernameVariable: USER, keyFileVariable: '/tmp/key-deleteme')
+                ]){
                     sh "Deploying the app with username ${USER}" 
-                ])
+                }
             }
         }
     // All code within this section will be executed once all stages have been executed
@@ -80,3 +81,4 @@ pipeline{
 
     }
 }
+
