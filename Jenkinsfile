@@ -61,12 +61,12 @@ pipeline{
                 // Here we use a plugin to bind the credentials stored within Jenkins to local variables 
                 // Source: https://www.jenkins.io/doc/pipeline/steps/credentials-binding/
                 // Copies the SSH key file given in the credentials to a temporary location, then sets a variable to that location - the file is deleted when the build completes.
-                /* withCredentials([
+                withCredentials([
                     sshUserPrivateKey(credentialsId: 'PyWebApp-Server-Credentials', usernameVariable: USER, keyFileVariable: '/tmp/key-deleteme')
                 ]){
                     sh "Deploying the app with username ${USER}" 
 
-                }*/
+                }
                 echo "Deploying version ${params.VERSION}"
             }
         }
@@ -84,4 +84,3 @@ pipeline{
 
     }
 }
-
